@@ -6,8 +6,8 @@ public class Learn : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public float xInput;
-    private float movement = 4;
-    private float jump = 5;
+    private float movement = 8;
+    private float jump = 8;
     public bool facingRight = true;
 
     [Header("Collision Info")]
@@ -55,7 +55,9 @@ public class Learn : MonoBehaviour
     {
         bool isMoving = rb.linearVelocity.x != 0;
 
+        anim.SetFloat("yVelocity", rb.linearVelocity.y);
         anim.SetBool("isMove", isMoving);
+        anim.SetBool("isGrounded", isGrounded);
     }
 
     private void Jump()
