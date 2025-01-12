@@ -1,15 +1,12 @@
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class Learn : MonoBehaviour
+public class Learn : Entity
 {
-    private Rigidbody2D rb;
-    private Animator anim;
+    [Header("Movement info")]
     public float xInput;
     [SerializeField] private float movement = 8;
     [SerializeField] private float jump = 8;
-    public bool facingRight = true;
-    private int facingDir = 1;
 
     [Header("Dash info")]
     [SerializeField] private float dashSpeed;
@@ -24,23 +21,16 @@ public class Learn : MonoBehaviour
     private float comboTimeCounter;
     [SerializeField] private float comboTime = .3f;
 
-    [Header("Collision info")]
-    [SerializeField] private float groundedCheckDistance;
-    [SerializeField] private LayerMask whatIsGorunded;
-    private bool isGrounded;
-
-    void Start()
+    protected override void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponentInChildren<Animator>();
+        base.Start();
     }
-
-    // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         Movement();
         CheckInput();
-        CollisionChecks();
 
         dashTime -= Time.deltaTime;
         dashCooldownTimer -= Time.deltaTime;
@@ -59,10 +49,6 @@ public class Learn : MonoBehaviour
         {
             comboTimeWindow = 0;
         }
-    }
-    private void CollisionChecks()
-    {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundedCheckDistance, whatIsGorunded);
     }
 
     private void CheckInput()
@@ -86,7 +72,7 @@ public class Learn : MonoBehaviour
 
     private void StartAttackEvent()
     {
-        if(!isGrounded)
+        if (!isGrounded)
         {
             return;
         }
@@ -144,13 +130,6 @@ public class Learn : MonoBehaviour
         }
     }
 
-    private void Flip()
-    {
-        facingDir *= -1;
-        facingRight = !facingRight;
-        transform.Rotate(0, 180, 0);
-    }
-
     private void FlipController()
     {
         if (facingRight && rb.linearVelocity.x < 0)
@@ -161,10 +140,5 @@ public class Learn : MonoBehaviour
         {
             Flip();
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - groundedCheckDistance));
     }
 }
