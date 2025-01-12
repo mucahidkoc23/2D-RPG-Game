@@ -6,14 +6,22 @@ public class Learn : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public float xInput;
-    private float movement = 8;
-    private float jump = 8;
+    [SerializeField] private float movement = 8;
+    [SerializeField] private float jump = 8;
     public bool facingRight = true;
 
-    [Header("Collision Info")]
-    private bool isGrounded;
+    [Header("Dash info")]
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float dashDruration;
+    private float dashTime;
+    [SerializeField] private float dashCooldown;
+    private float dashCooldownTimer;
+
+
+    [Header("Collision info")]
     [SerializeField] private float groundedCheckDistance;
     [SerializeField] private LayerMask whatIsGorunded;
+    private bool isGrounded;
 
     void Start()
     {
@@ -27,6 +35,9 @@ public class Learn : MonoBehaviour
         Movement();
         CheckInput();
         CollisionChecks();
+        dashTime -= Time.deltaTime;
+        dashCooldownTimer -= Time.deltaTime;
+
         FlipController();
         AnimatorController();
     }
@@ -44,11 +55,31 @@ public class Learn : MonoBehaviour
         {
             Jump();
         }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            DashAbility();
+        }
+    }
+
+    private void DashAbility()
+    {
+        if (dashCooldownTimer < 0)
+        {
+            dashCooldownTimer = dashCooldown;
+            dashTime = dashDruration;
+        }
     }
 
     private void Movement()
     {
-        rb.linearVelocity = new Vector2(xInput * movement, rb.linearVelocity.y);
+        if (dashTime > 0)
+        {
+            rb.linearVelocity = new Vector2(xInput * dashSpeed, 0);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(xInput * movement, rb.linearVelocity.y);
+        }
     }
 
     private void AnimatorController()
@@ -58,6 +89,7 @@ public class Learn : MonoBehaviour
         anim.SetFloat("yVelocity", rb.linearVelocity.y);
         anim.SetBool("isMove", isMoving);
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetBool("isDashing", dashTime > 0);
     }
 
     private void Jump()
