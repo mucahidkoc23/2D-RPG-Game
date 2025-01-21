@@ -12,7 +12,7 @@ public class PlayerMoveState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        player.SetVelocityX(xInput * player.moveSpeed, rb.linearVelocity.y);
+        player.SetVelocity(xInput * player.moveSpeed, rb.linearVelocity.y);
         if (xInput == 0)
         {
             stateMachine.ChangeState(player.IdleState);

@@ -4,11 +4,14 @@ using UnityEngine;
 public class PlayerState
 {
     protected float xInput;
+    protected float yInput;
     protected PlayerStateMachine stateMachine;
     protected Player player;
     public Rigidbody2D rb;
 
     private string animBoolName;
+
+    protected float stateTimer;
 
     public PlayerState(PlayerStateMachine stateMachine, Player player, String animBoolName)
     {
@@ -24,7 +27,9 @@ public class PlayerState
     }
     public virtual void Update()
     {
+        stateTimer -= Time.deltaTime;
         xInput = Input.GetAxisRaw("Horizontal");
+        yInput = Input.GetAxisRaw("Vertical");
         player.anim.SetFloat("yVelocity", rb.linearVelocity.y);
     }
     public virtual void Exit()
