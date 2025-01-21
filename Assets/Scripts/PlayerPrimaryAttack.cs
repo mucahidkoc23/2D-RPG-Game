@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class PlayerPrimaryAttack : PlayerState
+public class PlayerPrimaryAttackState : PlayerState
 {
     private int comboCounter;
     private float lastTimeAttacked;
     private float comboWindow = 2;
-    public PlayerPrimaryAttack(PlayerStateMachine stateMachine, Player player, string animBoolName) : base(stateMachine, player, animBoolName)
+    public PlayerPrimaryAttackState(PlayerStateMachine stateMachine, Player player, string animBoolName) : base(stateMachine, player, animBoolName)
     {
     }
 
@@ -19,6 +19,15 @@ public class PlayerPrimaryAttack : PlayerState
         }
 
         player.anim.SetInteger("ComboCounter", comboCounter);
+
+        float attackDir = player.FacingDir;
+
+        if (xInput != 0)
+        {
+            attackDir = xInput;
+        }
+
+        player.SetVelocity(player.attackMovement[comboCounter] * attackDir, rb.linearVelocity.y);
         stateTimer = .1f;
 
     }
@@ -32,7 +41,7 @@ public class PlayerPrimaryAttack : PlayerState
         }
         if (stateTimer < 0)
         {
-            rb.linearVelocity = new Vector2(0, 0);
+            player.ZeroVelecity();
         }
     }
     public override void Exit()

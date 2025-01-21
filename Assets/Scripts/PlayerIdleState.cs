@@ -9,7 +9,7 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        rb.linearVelocity = new Vector2(0, 0);
+        player.ZeroVelecity();
     }
     public override void Update()
     {
@@ -18,7 +18,7 @@ public class PlayerIdleState : PlayerGroundedState
         {
             return;
         }
-        if (xInput != 0 && player.isBusy)
+        if (xInput != 0 && !player.isBusy)
         {
             stateMachine.ChangeState(player.MoveState);
         }

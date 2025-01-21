@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Attack Details")]
+    public float[] attackMovement;
+
     public bool isBusy { get; private set; }
-    
+
     [Header("Player Info")]
     public float moveSpeed = 8f;
     public float jumpForce;
@@ -35,7 +38,7 @@ public class Player : MonoBehaviour
     public PlayerDashState DashState { get; private set; }
     public PlayerWallSlideState WallSlide { get; private set; }
     public PlayerWallJumpState WallJump { get; private set; }
-    public PlayerPrimaryAttack PrimaryAttack { get; private set; }
+    public PlayerPrimaryAttackState PrimaryAttack { get; private set; }
     private void Awake()
     {
         StateMachine = new PlayerStateMachine();
@@ -46,7 +49,7 @@ public class Player : MonoBehaviour
         DashState = new PlayerDashState(StateMachine, this, "Dash");
         WallSlide = new PlayerWallSlideState(StateMachine, this, "WallSlide");
         WallJump = new PlayerWallJumpState(StateMachine, this, "Jump");
-        PrimaryAttack = new PlayerPrimaryAttack(StateMachine, this, "Attack");
+        PrimaryAttack = new PlayerPrimaryAttackState(StateMachine, this, "Attack");
     }
 
     private void Start()
@@ -62,11 +65,13 @@ public class Player : MonoBehaviour
         CheckforDashInput();
     }
 
+    public void ZeroVelecity() => rb.linearVelocity = new Vector2(0, 0);
     public IEnumerator BusyFor(float seconds)
     {
         isBusy = true;
         yield return new WaitForSeconds(seconds);
         isBusy = false;
+
     }
 
     public void AnimationTrigger() => StateMachine.CurrentState.AnimationFinishTrigger();
