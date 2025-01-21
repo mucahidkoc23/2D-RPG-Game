@@ -14,7 +14,7 @@ public class PlayerDashState : PlayerState
     {
         base.Exit();
         player.SetVelocity(0, rb.linearVelocity.y);
-    } 
+    }
     public override void Update()
     {
         base.Update();
@@ -22,6 +22,10 @@ public class PlayerDashState : PlayerState
         player.SetVelocity(player.dashSpeed * player.dashDir, 0);
         Debug.Log(player.FacingDir);
 
+        if (!player.IsGroundedDetected() && player.IsWallDetected())
+        {
+            stateMachine.ChangeState(player.WallSlide); 
+        }
         if (stateTimer < 0)
         {
             stateMachine.ChangeState(player.IdleState);
